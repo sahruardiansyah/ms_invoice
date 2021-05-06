@@ -1,8 +1,7 @@
 package com.nsr.invoice.mgr;
 
-
+import com.nsr.commons.exception.NsrException;
 import com.nsr.invoice.entity.Cinema;
-import com.nsr.invoice.exception.ResourceNotFoundException;
 import com.nsr.invoice.repository.CinemaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class CinemaManager {
 
     public Cinema getCinemaById(String cinemaId) {
         // TODO Auto-generated method stub
-        return cinemaRepository.findById(cinemaId).orElseThrow(()->new ResourceNotFoundException(String.format("Cinema with id: %s nnot found!",cinemaId)));
+        return cinemaRepository.findById(cinemaId).orElseThrow(()->new NsrException(String.format("Cinema with id: %s nnot found!",cinemaId)));
     }
 
     public List<Cinema> getAllCinema() {
