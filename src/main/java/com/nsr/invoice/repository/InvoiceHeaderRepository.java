@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface InvoiceHeaderRepository extends JpaRepository<InvoiceHeader, Integer> {
     List<InvoiceHeader>getInvoiceHeaderByTypeId(Integer typeId);
+    InvoiceHeader getInvoiceHeaderByInvoiceNo(String invoiceNo);
 }
