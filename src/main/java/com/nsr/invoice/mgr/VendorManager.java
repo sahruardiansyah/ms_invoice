@@ -1,7 +1,7 @@
 package com.nsr.invoice.mgr;
 
+import com.nsr.commons.exception.NsrException;
 import com.nsr.invoice.entity.Vendor;
-import com.nsr.invoice.exception.ResourceNotFoundException;
 import com.nsr.invoice.repository.VendorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class VendorManager {
 
     public Vendor getVendorById(Integer vendorId) {
         // TODO Auto-generated method stub
-        return vendorRepository.findById(vendorId).orElseThrow(()->new ResourceNotFoundException(String.format("vendor with id: %s not found",vendorId)));
+        return vendorRepository.findById(vendorId).orElseThrow(()->new NsrException(String.format("vendor with id: %s not found",vendorId)));
     }
 
     public List<Vendor> getAllVendor() {

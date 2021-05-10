@@ -1,5 +1,7 @@
 package com.nsr.invoice.entity;
 
+import com.nsr.invoice.model.InvoiceLineAir;
+import com.nsr.invoice.model.InvoiceLineGas;
 import com.nsr.invoice.model.InvoiceLineListrik;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +26,7 @@ public class InvoiceLine {
     private Integer awal;
     private Integer lwbpAkhir;
     private Integer akhir;
+    private Integer usageAirGas;
     private Integer tarif;
     private Integer tarifLwbp;
     private Integer tarifWbp;
@@ -70,5 +73,25 @@ public class InvoiceLine {
         this.lineKeterangan = listrik.getLineKeterangan();
         this.amountLine= listrik.getAmountLine();
         this.invoiceNo=listrik.getInvoiceNo();
+    }
+
+    public InvoiceLine(InvoiceLineAir air){
+        this.invoiceNo = air.getInvoiceNo();
+        this.awal = air.getAwal();
+        this.akhir = air.getAkhir();
+        this.usageAirGas = air.getAirUsage();
+        this.lineKeterangan = air.getLineKeterangan();
+        this.tarif = air.getTarif();
+        this.amountLine = air.getAmountLine();
+    }
+
+    public InvoiceLine(InvoiceLineGas gas){
+        this.invoiceNo = gas.getInvoiceNo();
+        this.awal = gas.getAwal();
+        this.akhir = gas.getAkhir();
+        this.usageAirGas = gas.getAirUsage();
+        this.lineKeterangan = gas.getLineKeterangan();
+        this.tarif = gas.getTarif();
+        this.amountLine = gas.getAmountLine();
     }
 }
