@@ -1,12 +1,18 @@
 package com.nsr.invoice.controller;
 
+import com.nsr.commons.web.rest.util.RestUtils;
 import com.nsr.invoice.entity.Vendor;
 import com.nsr.invoice.mgr.VendorManager;
 import com.nsr.invoice.model.UpdateVendorRequest;
+import com.nsr.invoice.repository.VendorRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,18 +24,26 @@ public class VendorController {
 	private static final Logger logger = LoggerFactory.getLogger(VendorController.class);
 	@Autowired
 	VendorManager vendorService;
+	@Autowired
+	VendorRepository vendorRepository;
 
 
 	@ResponseStatus(code = HttpStatus.OK)
 	@GetMapping("/")
-	public List<Vendor> getAllvendor() {
-		return vendorService.getAllVendor();
+	public ResponseEntity<Object> getAllvendor(
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		Pageable pageable = PageRequest.of(page,size);
+		Page<Vendor>vendorPage= vendorRepository.findAll(pageable);
+
+		return RestUtils.createResponsePage(vendorPage,pageable);
 	}
 
 	@ResponseStatus(code = HttpStatus.OK)
 	@GetMapping("/{vendorId}")
-	public Vendor getvendorById(@PathVariable Integer vendorId) {
-		return vendorService.getVendorById(vendorId);
+	public ResponseEntity<Object> getvendorById(@PathVariable Integer vendorId) {
+		Vendor vendor = vendorService.getVendorById(vendorId);
+		return RestUtils.createResponseOk(vendor);
 	}
 	
 
@@ -40,9 +54,9 @@ public class VendorController {
 		return vendorService.addOrUpdateVendor(vendor);
 	}
 
-	@ResponseStatus(code = HttpStatus.CREATED)
+	@ResponseStatus(code = HttpStatus.OK)
 	@PutMapping("/{vendorId}")
-	public Vendor updatevendor(@PathVariable Integer vendorId,@RequestBody UpdateVendorRequest vendor) {
+	public ResponseEntity<Object> updatevendor(@PathVariable Integer vendorId,@RequestBody UpdateVendorRequest vendor) {
 		logger.info("id request : "+vendorId);
 		Vendor data = vendorService.getVendorById(vendorId);
 		data.setVendorAddress(vendor.getVendorAddress());
@@ -53,7 +67,8 @@ public class VendorController {
 		data.setPostCode(vendor.getPostCode());
 		data.setTelepon(vendor.getTelepon());
 		logger.info("update vendor request : "+vendor);
-		return vendorService.addOrUpdateVendor(data);
+		Vendor updated= vendorService.addOrUpdateVendor(data);
+		return RestUtils.createResponseOk(updated);
 	}
 
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
