@@ -29,6 +29,6 @@ public class InvoiceHeader {
     private Double ppn;
     private Integer materai;
     private Integer amountTotal;
-    private Boolean status;
+    private Integer status = 1;
     private String keterangan;
 }

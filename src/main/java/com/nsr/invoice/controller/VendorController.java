@@ -13,9 +13,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.URLDecoder;
 import java.util.List;
 
 @RestController
@@ -31,12 +33,25 @@ public class VendorController {
 	@ResponseStatus(code = HttpStatus.OK)
 	@GetMapping("/")
 	public ResponseEntity<Object> getAllvendor(
-			@RequestParam(value = "page", defaultValue = "0") Integer page,
-			@RequestParam(value = "size", defaultValue = "10") Integer size) {
-		Pageable pageable = PageRequest.of(page,size);
-		Page<Vendor>vendorPage= vendorRepository.findAll(pageable);
+			@RequestParam(value = "page", required = false) Integer page,
+			@RequestParam(value = "size", required = false) Integer size) {
+		try {
+			if (page != null || size != null) {
+				page = (page != null ? page : 0);
+				size = (size != null ? size : 10);
 
-		return RestUtils.createResponsePage(vendorPage,pageable);
+				Pageable pageable = PageRequest.of(page, size);
+				Page<Vendor> vendorPage = vendorRepository.findAll(pageable);
+
+				return RestUtils.createResponsePage(vendorPage, pageable);
+			} else {
+				List<Vendor> countryList = vendorRepository.findAll();
+				return RestUtils.createResponseOk(countryList);
+			}
+		}catch (Exception e){
+			logger.error("ERROR", e);
+			return RestUtils.createResponseBadRequest("");
+		}
 	}
 
 	@ResponseStatus(code = HttpStatus.OK)
